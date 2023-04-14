@@ -39,7 +39,6 @@ class Spotify():
 
     def get_device_id(self,player):
         devices = player.devices()
-        print(devices)
         if devices['devices']:
         # Get the ID of the first available device
             device_id = devices['devices'][0]['id']
