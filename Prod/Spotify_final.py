@@ -18,7 +18,6 @@ from selenium.webdriver.chrome.service import Service
 import cv2
 import numpy as np
 import mediapipe as mp
-import tensorflow as tf
 from keras.models import load_model
 
 # user-read-private%user-read-email%user-library-read%user-library-modify%user-read-playback-state%user-modify-playback-state%playlist-modify-public%playlist-modify-private%playlist-read-private%playlist-read-collaborative%user-follow-read%user-follow-modify%user-top-read
@@ -72,15 +71,20 @@ class Spotify():
         new_volume = min(100, current_volume + 5)
         player.volume(new_volume)
         print(f"New Volume: {new_volume}")
-        return new_volume
+        time.sleep(0.5)
+
 
     def volume_down(self,player):
-        current_volume = player.current_playback()['device']['volume_percent']
-        print(f"Current Volume: {current_volume}")
-        new_volume = new_volume = max(current_volume - 5, 0)
-        player.volume(new_volume)
-        print(f"New Volume: {new_volume}")
-        return new_volume
+        try:
+            current_volume = player.current_playback()['device']['volume_percent']
+            print(f"Current Volume: {current_volume}")
+            new_volume = new_volume = max(current_volume - 5, 0)
+            player.volume(new_volume)
+            print(f"New Volume: {new_volume}")
+        except Exception as e:
+            print(e)
+        time.sleep(0.5)
+
 
     def get_current_track_metadata(self,player):
         current_track = player.current_playback()
@@ -133,124 +137,127 @@ class Spotify():
         openS.click()
         return driver
     
-    def control_playback(self,player):
-        self.get_current_track_metadata(player)
+    def pause_playback(self,player):
+        player.pause_playback()
+        time.sleep(0.5)
+        print('----------pausing track----------')
 
-        mpHands = mp.solutions.hands
-        hands = mpHands.Hands(max_num_hands=1, min_detection_confidence=0.7)
-        mpDraw = mp.solutions.drawing_utils
+    def start_playback(self,player):
+        player.start_playback()
+        time.sleep(0.5)
+        print('----------resuming track----------')
+    def next_track(self,player):
+        player.next_track()
+        time.sleep(0.5)
+        print('----------Going to next song----------')
+    def previous_track(self,player):
+        player.previous_track()
+        time.sleep(0.5)
+        print('----------Going to previous song----------')
+    
+    # def control_playback(self,player):
+    #     self.get_current_track_metadata(player)
 
-        # Load the gesture recognizer model
-        model = load_model('Spotify\Models\Hands\mp_hand_gesture')
+    #     mpHands = mp.solutions.hands
+    #     hands = mpHands.Hands(max_num_hands=1, min_detection_confidence=0.7)
+    #     mpDraw = mp.solutions.drawing_utils
 
-        # Load class names
-        f = open('Spotify\Models\Hands\gesture.names', 'r')
-        classNames = f.read().split('\n')
-        f.close()
-        print(classNames)
+    #     # Load the gesture recognizer model
+    #     model = load_model('Spotify\Models\Hands\mp_hand_gesture')
 
-        # Initialize the webcam
-        cap = cv2.VideoCapture(0)
+    #     # Load class names
+    #     f = open('Spotify\Models\Hands\gesture.names', 'r')
+    #     classNames = f.read().split('\n')
+    #     f.close()
+    #     print(classNames)
 
-        # Set up variables for gesture tracking
-        gesture_count = 0
-        current_gesture = None
+    #     # Initialize the webcam
+    #     cap = cv2.VideoCapture(0)
 
-        while True:
-            # Read each frame from the webcam
-            _, frame = cap.read()
+    #     # Set up variables for gesture tracking
+    #     gesture_count = 0
+    #     current_gesture = None
 
-            x, y, c = frame.shape
+    #     while True:
+    #         # Read each frame from the webcam
+    #         _, frame = cap.read()
 
-            # Flip the frame vertically
-            frame = cv2.flip(frame, 1)
-            framergb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    #         x, y, c = frame.shape
 
-            # Get hand landmark prediction
-            result = hands.process(framergb)
+    #         # Flip the frame vertically
+    #         frame = cv2.flip(frame, 1)
+    #         framergb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-            className = ''
+    #         # Get hand landmark prediction
+    #         result = hands.process(framergb)
 
-            # post process the result
-            if result.multi_hand_landmarks:
-                landmarks = []
-                for handslms in result.multi_hand_landmarks:
-                    for lm in handslms.landmark:
-                        lmx = int(lm.x * x)
-                        lmy = int(lm.y * y)
+    #         className = ''
 
-                        landmarks.append([lmx, lmy])
+    #         # post process the result
+    #         if result.multi_hand_landmarks:
+    #             landmarks = []
+    #             for handslms in result.multi_hand_landmarks:
+    #                 for lm in handslms.landmark:
+    #                     lmx = int(lm.x * x)
+    #                     lmy = int(lm.y * y)
 
-                    # Drawing landmarks on frames
-                    mpDraw.draw_landmarks(frame, handslms, mpHands.HAND_CONNECTIONS)
+    #                     landmarks.append([lmx, lmy])
 
-                    # Predict gesture
-                    prediction = model.predict([landmarks])
-                    classID = np.argmax(prediction)
-                    className = classNames[classID]
-            else:
-                className = None
+    #                 # Drawing landmarks on frames
+    #                 mpDraw.draw_landmarks(frame, handslms, mpHands.HAND_CONNECTIONS)
 
-            # Check if the detected gesture is the same as the previous one
-            if className == current_gesture and className != None:
-                gesture_count += 1
-            elif className != current_gesture and className != None:
-                current_gesture = className
-                gesture_count = 1
-            elif className == None:
-                gesture_count = 0
+    #                 # Predict gesture
+    #                 prediction = model.predict([landmarks])
+    #                 classID = np.argmax(prediction)
+    #                 className = classNames[classID]
+    #         else:
+    #             className = None
+
+    #         # Check if the detected gesture is the same as the previous one
+    #         if className == current_gesture and className != None:
+    #             gesture_count += 1
+    #         elif className != current_gesture and className != None:
+    #             current_gesture = className
+    #             gesture_count = 1
+    #         elif className == None:
+    #             gesture_count = 0
             
 
-            # Show the prediction on the frame
-            cv2.putText(frame, className, (10, 50), cv2.FONT_HERSHEY_SIMPLEX,
-                        1, (0, 0, 255), 2, cv2.LINE_AA)
+    #         # Show the prediction on the frame
+    #         cv2.putText(frame, className, (10, 50), cv2.FONT_HERSHEY_SIMPLEX,
+    #                     1, (0, 0, 255), 2, cv2.LINE_AA)
 
-            # Show the final output
-            cv2.imshow("Output", frame)
+    #         # Show the final output
+    #         cv2.imshow("Output", frame)
 
-            # Check if the gesture has been detected for 4 seconds in a row
-            if gesture_count >= 20:
-                if className == 'stop':
-                    player.pause_playback()
-                    time.sleep(0.5)
-                    print('----------pausing track----------')
-                elif className == 'okay':
-                    player.start_playback()
-                    time.sleep(0.5)
-                    print('----------resuming track----------')
-                elif className == 'thumbs up':
-                    new_volume = self.volume_up(player)
-                    time.sleep(0.5)
-                elif className == 'thumbs down':
-                    try:
-                        new_volume = self.volume_down(player)
-                    except Exception as e:
-                        print(e)
-                    time.sleep(0.5)
-                elif className == "peace":
-                    player.next_track()
-                    time.sleep(0.5)
-                    print('----------Going to next song----------')
-                    self.get_current_track_metadata(player)
-                elif className == 'fist':
-                    player.previous_track()
-                    time.sleep(0.5)
-                    print('----------Going to previous song----------')
-                    self.get_current_track_metadata(player)
-                elif className == "call me":
-                    player.pause_playback()
-                    print('done')
-                    break
+    #         # Check if the gesture has been detected for 4 seconds in a row
+    #         if gesture_count >= 20:
+    #             if className == 'stop':
+    #                 self.pause_playback(player)
+    #             elif className == 'okay':
+    #                 self.start_playback(player)
+    #             elif className == 'thumbs up':
+    #                 self.volume_up(player)
+    #             elif className == 'thumbs down':
+    #                 self.volume_down(player)
+    #             elif className == "peace":
+    #                 self.next_track(player)
+    #                 self.get_current_track_metadata(player)
+    #             elif className == 'fist':
+    #                 self.previous_track(player)
+    #                 self.get_current_track_metadata(player)
+    #             elif className == "call me":
+    #                 self.pause_playback(player)
+    #                 print('Thank You For Using Sound Sensei')
+    #                 break
+    #             gesture_count = 0
+    #             current_gesture = None
 
+    #         if cv2.waitKey(1) == ord('q'):
+    #             break
 
-                gesture_count = 0
-                current_gesture = None
-
-            if cv2.waitKey(1) == ord('q'):
-                break
-
-        # release the webcam and destroy all active windows
-        cap.release()
-        cv2.destroyAllWindows()
+    #     # release the webcam and destroy all active windows
+    #     cap.release()
+    #     cv2.destroyAllWindows()
 
 

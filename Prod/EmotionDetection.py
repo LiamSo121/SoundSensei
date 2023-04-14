@@ -29,13 +29,15 @@ class EmotionDetection():
                 emoDict = analysis[0]['emotion']
                 max_value = max(emoDict, key=emoDict.get)
                 print(max_value)
+                if len(self.emotion_list) > 10:
+                    self.emotion_list.pop(0)
                 self.emotion_list.append(max_value)
                 image = cv2.putText(image, max_value, self.org, self.font, self.fontScale, self.color, self.thickness)
                 cv2.imshow("test", image)
                 cv2.waitKey(3)
             except:
                 print("Face could not be detected.")
-            if time.time() - self.start_time >= 5:
+            if time.time() - self.start_time >= 10:
                 break
 
         print(self.emotion_list)
