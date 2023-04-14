@@ -1,12 +1,8 @@
 import os
 import time
-from EmotionDetection import EmotionDetection
 from Spotify_final import Spotify
 import threading
 
-
-os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-face = EmotionDetection()
 spotify = Spotify()
 
 
@@ -16,15 +12,11 @@ username = spotify.username
 password = spotify.password
 player = spotify.sp
 
-emotion = face.activate_camera()
-print(emotion)
-
-
 driver = spotify.open_spotify(username,password)
 
 
 access_token = spotify.get_access_token(client_id,client_secret)
-playlist_id = spotify.get_playlist_id(access_token,emotion)
+playlist_id = spotify.get_playlist_id(access_token,'happy')
 
 time.sleep(3)
 device_id = spotify.get_device_id(player)
@@ -36,6 +28,8 @@ player.start_playback(uris=track_uris,device_id=device_id)
 
 time.sleep(3)
 driver.minimize_window()
+
+
 spotify.control_playback(player)
 driver.close()
 

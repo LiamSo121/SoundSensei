@@ -1,5 +1,4 @@
 from deepface import DeepFace
-import os
 import cv2
 import time
 import statistics
