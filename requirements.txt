@@ -9,5 +9,3 @@ deepface == 0.0.79
 statistics == 1.0.3.5
 
 
-
-
