@@ -15,6 +15,11 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 
+import cv2
+import numpy as np
+import mediapipe as mp
+from keras.models import load_model
+
 # user-read-private%user-read-email%user-library-read%user-library-modify%user-read-playback-state%user-modify-playback-state%playlist-modify-public%playlist-modify-private%playlist-read-private%playlist-read-collaborative%user-follow-read%user-follow-modify%user-top-read
 
 # AQAm-UyCRTZQKg4GcO-e8iq7fgNHgHFMPB7_FWQ0L_Xdvz8lR0aLA25E7GRC3nbW76_7FWK53vKlv1CX0TgE5WG4KWAwSlk0cwoemXTSFLai0LUcDab5lIecHGUCyDu9DT-WrK23egX2NupmXyanM1G9jqCsoEgYgfpTPMrmMc1fh4WPlp8hIa3iFPHfJ3QIqRGUOHFmc5a5VToWQw
@@ -33,7 +38,6 @@ class Spotify():
 
     def get_device_id(self,player):
         devices = player.devices()
-        print(devices)
         if devices['devices']:
         # Get the ID of the first available device
             device_id = devices['devices'][0]['id']
@@ -62,20 +66,28 @@ class Spotify():
         return playlist_id
 
     def volume_up(self,player):
-        current_volume = player.current_playback()['device']['volume_percent']
-        print(f"Current Volume: {current_volume}")
-        new_volume = min(100, current_volume + 5)
-        player.volume(new_volume)
-        print(f"New Volume: {new_volume}")
-        return new_volume
+        try:
+            current_volume = player.current_playback()['device']['volume_percent']
+            print(f"Current Volume: {current_volume}")
+            new_volume = min(100, current_volume + 5)
+            player.volume(new_volume)
+            print(f"New Volume: {new_volume}")
+        except Exception as e:
+            print(e)
+        time.sleep(0.5)
+
 
     def volume_down(self,player):
-        current_volume = player.current_playback()['device']['volume_percent']
-        print(f"Current Volume: {current_volume}")
-        new_volume = new_volume = max(current_volume - 5, 0)
-        player.volume(new_volume)
-        print(f"New Volume: {new_volume}")
-        return new_volume
+        try:
+            current_volume = player.current_playback()['device']['volume_percent']
+            print(f"Current Volume: {current_volume}")
+            new_volume = new_volume = max(current_volume - 5, 0)
+            player.volume(new_volume)
+            print(f"New Volume: {new_volume}")
+        except Exception as e:
+            print(e)
+        time.sleep(0.5)
+
 
     def get_current_track_metadata(self,player):
         current_track = player.current_playback()
@@ -128,36 +140,21 @@ class Spotify():
         openS.click()
         return driver
     
-    def control_playback(self,player):
-        self.get_current_track_metadata(player)
-        while True:
-            action = str(input('f - next track p - previous track s - stop track r - resume track u - volume up d volume down'))
-            if action == 'f':
-                player.next_track()
-                time.sleep(0.5)
-                print('----------Going to next song----------')
-                self.get_current_track_metadata(player)
-            elif action == 'p':
-                player.previous_track()
-                time.sleep(0.5)
-                print('----------Going to previous song----------')
-                self.get_current_track_metadata(player)
-            elif action == 's':
-                player.pause_playback()
-                time.sleep(0.5)
-                print('----------pausing track----------')
-            elif action == 'r':
-                player.start_playback()
-                time.sleep(0.5)
-                print('----------resuming track----------')
-            elif action == 'u':
-                new_volume = self.volume_up(player)
-                time.sleep(0.5)
-            elif action == 'd':
-                new_volume = self.volume_down(player)
-                time.sleep(0.5)
-            else:
-                player.pause_playback()
-                print('done')
-                break
+    def pause_playback(self,player):
+        player.pause_playback()
+        time.sleep(0.5)
+        print('----------pausing track----------')
 
+    def start_playback(self,player):
+        player.start_playback()
+        time.sleep(0.5)
+        print('----------resuming track----------')
+    def next_track(self,player):
+        player.next_track()
+        time.sleep(0.5)
+        print('----------Going to next song----------')
+    def previous_track(self,player):
+        player.previous_track()
+        time.sleep(0.5)
+        print('----------Going to previous song----------')
+    
