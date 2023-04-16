@@ -1,8 +1,8 @@
 import os
 import time
-from EmotionDetection import EmotionDetection
-from Spotify_final import Spotify
-from HandIntegration import activate_hand_gestures_model
+from stage_EmotionDetection import EmotionDetection
+from stage_Spotify_final import Spotify
+from stage_HandIntegration import activate_hand_gestures_model
 
 print("Dear User\nKindly check that your Google Chrome Browser is at least at version 112.0.5615.87\nIf not, Please update your Web Browser before Using SoundSensei")
 

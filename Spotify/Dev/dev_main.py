@@ -1,8 +1,18 @@
 import os
 import time
-from EmotionDetection import EmotionDetection
-from Spotify_final import Spotify
-from HandIntegration import activate_hand_gestures_model
+from dev_EmotionDetection import EmotionDetection
+from dev_Spotify_final import Spotify
+from dev_HandIntegration import activate_hand_gestures_model
+
+# List Of Gestures:
+# play == okay
+# stop == Live Long == stop
+# volume up == thumbs up
+# volume down == thumbs down
+# next track == peace
+# previous track == fist
+# exit == call me
+
 
 print("Dear User\nKindly check that your Google Chrome Browser is at least at version 112.0.5615.87\nIf not, Please update your Web Browser before Using SoundSensei")
 
