@@ -5,7 +5,7 @@ Team Members:
 Liam Sobol 206092397
 Roy Alshech
 Aviv Lohiet
-Raphael Stanislas
+Raphael Stanislas 332264498
 
 Welcome to SoundSensei!
 
