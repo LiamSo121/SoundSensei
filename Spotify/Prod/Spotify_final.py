@@ -34,7 +34,8 @@ class Spotify():
         self.username = os.getenv("EMAIL")
         self.password = os.getenv("PASSWORD")
         self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.client_id, client_secret=self.client_secret, redirect_uri=self.redirect_uri, scope=self.scope))
-
+        self.device_id = None
+        self.emotion = None
 
     def get_device_id(self,player):
         devices = player.devices()
@@ -158,3 +159,18 @@ class Spotify():
         time.sleep(0.5)
         print('----------Going to previous song----------')
     
+
+    def connect(self,spotify):
+        driver = spotify.open_spotify(spotify.username,spotify.password)
+        access_token = spotify.get_access_token(spotify.client_id,spotify.client_secret)
+        playlist_id = spotify.get_playlist_id(access_token,spotify.emotion)
+        time.sleep(3)
+        spotify.device_id = spotify.get_device_id(spotify.sp)
+        print("device: ", spotify.device_id)
+        playlist = self.sp.playlist(playlist_id)
+        track_uris = [track['track']['uri'] for track in playlist['tracks']['items']]
+
+        # Start Spotify
+        self.sp.start_playback(uris=track_uris,device_id=spotify.device_id)
+        time.sleep(3)
+        driver.minimize_window()

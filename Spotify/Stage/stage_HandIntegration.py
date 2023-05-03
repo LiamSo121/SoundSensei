@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import mediapipe as mp
 from keras.models import load_model
-from Spotify_final import Spotify
+from stage_Spotify_final import Spotify
 
 
 # List Of Gestures:
