@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="Icon">
+    <file>icons/sensei.png</file>
+  </qresource>
+</RCC>

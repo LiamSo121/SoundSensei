@@ -1,0 +1,14 @@
+camera:
+  font: cv2.FONT_HERSHEY_SIMPLEX
+
+  # org
+  org: !!python/tuple [0,50]
+
+  # fontScale
+  fontScale: 1
+
+  # Blue color in BGR
+  color: !!python/tuple [255, 0, 0]
+
+  # Line thickness of 2 px
+  thickness: 2
