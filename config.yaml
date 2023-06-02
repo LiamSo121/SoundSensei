@@ -2,13 +2,27 @@ camera:
   font: cv2.FONT_HERSHEY_SIMPLEX
 
   # org
-  org: !!python/tuple [0,50]
+  org: !!python/tuple [291,32]
 
   # fontScale
   fontScale: 1
 
   # Blue color in BGR
-  color: !!python/tuple [255, 0, 0]
+  color: !!python/tuple [189, 109, 62]
 
   # Line thickness of 2 px
   thickness: 2
+
+emotion:
+  emo_frames: 20
+
+diagram:
+  size: !!python/tuple [250,250]
+
+dalle-2:
+  size: '512x512'
+
+
+
+hands:
+  size: 15

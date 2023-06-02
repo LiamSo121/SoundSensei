@@ -20,7 +20,7 @@ import DalleThread
 
 
 class HandsModel:
-    def __init__(self,spotify,dalle,emotion):
+    def __init__(self,spotify,dalle,emotion,data):
         self.spotify = spotify
         self.restart = False
         self.dalle = dalle
@@ -36,6 +36,7 @@ class HandsModel:
         self.image = None
         self.dalle_thread = DalleThread.DalleThread(self.dalle,self.emotion)
         self.nonActiveGesturesList = ['smile','live long','rock']
+        self.data = data
 
 
 
@@ -103,7 +104,7 @@ class HandsModel:
 
     def control_playback(self,className):
         # Check if the gesture has been detected for X Frames in a row
-        if self.gesture_count == 15:
+        if self.gesture_count == self.data['hands']['size']:
             if className == 'Stop':
                 self.spotify.pause_playback(self.spotify.sp)
             elif className == 'Play':

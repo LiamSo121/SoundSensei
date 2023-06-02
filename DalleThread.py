@@ -10,9 +10,7 @@ class DalleThread(Thread):
         Thread.__init__(self)
         self.dalle = dalle
         self.emotion = emotion
-        self.image = None
-
-    # function executed in a new thread
+        self.image = None    # function executed in a new thread
     def run(self):
         self.image = self.dalle.generate_image(self.emotion)
         

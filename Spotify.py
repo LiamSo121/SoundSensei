@@ -227,5 +227,4 @@ class Spotify:
         data = json.load(f)
         playlist_ids_list = data[emotion]
         playlist_id = random.choice(playlist_ids_list)
-        print(playlist_id)
         return playlist_id

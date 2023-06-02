@@ -42,7 +42,7 @@ class Handler:
         ret, frame = self.vid.read()
         frame = cv2.flip(frame, 1)
         originalFrame = frame.copy()
-
+        height, width, _ = frame.shape
         # --------------------------------------------------#
         # System initialization, Handle the connection to the
         # APIs
@@ -66,14 +66,15 @@ class Handler:
             if emoPredict in self.EmoModel.classes:
                 self.emotion_list.append(emoPredict)
                 diagram_image = self.diagram.create_radar_chart(emoPredict)
+
                 frame = cv2.putText(frame, emoPredict, self.data['camera']['org'], cv2.FONT_HERSHEY_SIMPLEX,
                                     self.data['camera']['fontScale'], self.data['camera']['color'],
                                     self.data['camera']['thickness'])
                 # diagram_image = cv2.cvtColor(diagram_image, cv2.COLOR_RGBA2BGR)
-                diagram_image = cv2.resize(diagram_image, (250, 250))
+                diagram_image = cv2.resize(diagram_image, self.data['diagram']['size'])
                 # Calculate the position to place the diagram in the top right corner
 
-                if len(self.emotion_list) == 20:
+                if len(self.emotion_list) == self.data['emotion']['emo_frames']:
                     self.emotion = statistics.mode(self.emotion_list)
                     print(f"Chosen Emotion: {self.emotion}")
                     self.DalleThread = DalleThread.DalleThread(self.Dalle, self.emotion)
@@ -91,7 +92,7 @@ class Handler:
 
             self.playListID = self.SpotifyQueryThread.playListID
             if self.playListID:
-                self.handsModel = HandsModel.HandsModel(self.Spotify, self.Dalle, self.emotion)
+                self.handsModel = HandsModel.HandsModel(self.Spotify, self.Dalle, self.emotion,self.data)
                 self.state = 'playlistControl'
                 frame = originalFrame
 
@@ -104,10 +105,12 @@ class Handler:
             self.handsModel.count_gestures(className)
             if className not in self.nonActiveGesturesList:
                 self.handsModel.control_playback(className)
+                # Put the text on the frame image
+                frame = cv2.putText(frame, className, self.data['camera']['org'], cv2.FONT_HERSHEY_SIMPLEX,
+                                    self.data['camera']['fontScale'], self.data['camera']['color'],
+                                    self.data['camera']['thickness'])
+    
 
-                # Show the prediction on the frame
-                cv2.putText(frame, className, (0, 50), cv2.FONT_HERSHEY_SIMPLEX,
-                            1, (0, 0, 255), 2, cv2.LINE_AA)
 
             if self.handsModel.restart:
                 self.emotion_list = []
