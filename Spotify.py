@@ -1,11 +1,11 @@
 import requests
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
-# from dotenv import load_dotenv
+import os
+from dotenv import load_dotenv
 import json
 import time
 import base64
-import os
 import random
 
 from selenium import webdriver
@@ -23,19 +23,20 @@ from selenium.webdriver.chrome.service import Service
 
 
 class Spotify:
+    load_dotenv()
     def __init__(self):
-        # self.client_id = os.getenv("CLIENT_ID")
-        self.client_id = "33b9471f705546e1a0b6deae9edfc6dc"
-        # self.client_secret = os.getenv("CLIENT_SECRET")
-        self.client_secret = "a06ff14da97540bd8bd9e72a385a7300"
-        # self.redirect_uri = os.getenv("SPOTIPY_REDIRECT_URI")
-        self.redirect_uri = "http://127.0.0.1:9090"
-        # self.scope = os.getenv("SCOPE")
-        self.scope = "user-read-private user-read-email user-library-read user-library-modify user-read-playback-state user-modify-playback-state playlist-modify-public playlist-modify-private playlist-read-private playlist-read-collaborative user-follow-read user-follow-modify user-top-read"
-        # self.username = os.getenv("EMAIL")
-        self.username = "itziktheliquid@gmail.com"
-        # self.password = os.getenv("PASSWORD")
-        self.password = "LiamSobol123"
+        self.client_id = os.getenv("CLIENT_ID")
+        # self.client_id = "33b9471f705546e1a0b6deae9edfc6dc"
+        self.client_secret = os.getenv("CLIENT_SECRET")
+        # self.client_secret = "a06ff14da97540bd8bd9e72a385a7300"
+        self.redirect_uri = os.getenv("SPOTIPY_REDIRECT_URI")
+        # self.redirect_uri = "http://127.0.0.1:9090"
+        self.scope = os.getenv("SCOPE")
+        # self.scope = "user-read-private user-read-email user-library-read user-library-modify user-read-playback-state user-modify-playback-state playlist-modify-public playlist-modify-private playlist-read-private playlist-read-collaborative user-follow-read user-follow-modify user-top-read"
+        self.username = os.getenv("EMAIL")
+        # self.username = "itziktheliquid@gmail.com"
+        self.password = os.getenv("PASSWORD")
+        # self.password = "LiamSobol123"
         self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.client_id, client_secret=self.client_secret, redirect_uri=self.redirect_uri, scope=self.scope))
         self.access_token = None
         self.device_id = None
@@ -96,6 +97,7 @@ class Spotify:
         return access_token
     
     def get_current_track_metadata(self,player,tracks_uri_list):
+        time.sleep(0.3)
         current_track = player.current_playback()  # Retrieve currently playing track
         temp_track_id = current_track['item']['id']  # Extract the ID of the current track
         current_track_id = f"spotify:track:{temp_track_id}"
@@ -118,12 +120,14 @@ class Spotify:
             except Exception as e:
                 print(e)
 
-    def get_playlist_id(self,access_token,emotion):
+    def get_playlist_id(self,emotion,access_token):
         endpoint = 'https://api.spotify.com/v1/search'
         # Set the query parameters for the API request
         query_params = {
             'type': 'playlist',
-            'q': f'emotion:{emotion}'
+            'q': f'emotion:{emotion}',
+            'limit': 5
+
         }
         # Set up the API request headers with the access token
         headers = {
@@ -133,9 +137,18 @@ class Spotify:
         response = requests.get(endpoint, params=query_params, headers=headers)
         # Parse the JSON response
         response_json = json.loads(response.text)
-        # Extract the playlist URI from the response
-        playlist_id = response_json['playlists']['items'][0]['uri']
-        
+        playlist_uris = []
+        if 'playlists' in response_json:
+            playlists = response_json['playlists']
+            if 'items' in playlists:
+                for item in playlists['items']:
+                    if 'uri' in item:
+                        playlist_uris.append(item['uri'])
+
+        playlist_id = random.choice(playlist_uris)
+
+        print(playlist_id)
+
         return playlist_id
 
 
@@ -213,15 +226,3 @@ class Spotify:
             print(e)
         time.sleep(0.3)
 
-    def get_current_track_name(self,player):
-        current_track = player.current_playback()
-        track_name = current_track['item']['name']
-        return track_name
-
-
-    def get_playlist(self,emotion):
-        f = open('playlists_db.json')
-        data = json.load(f)
-        playlist_ids_list = data[emotion]
-        playlist_id = random.choice(playlist_ids_list)
-        return playlist_id

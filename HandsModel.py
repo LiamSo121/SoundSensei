@@ -47,12 +47,8 @@ class HandsModel:
         random.shuffle(track_uris)
 
         self.spotify.track_uri_list = track_uris
-        # if self.spotify.track_uri_list:
-        #     quit()
-        # Start Spotify
         try:
             self.spotify.sp.start_playback(uris=track_uris,device_id= self.spotify.device_id)
-            time.sleep(0.5)
             self.spotify.get_current_track_metadata(self.spotify.sp,self.spotify.track_uri_list)
             # self.dalle.generate_image(self.emotion,self.spotify.current_track)
             self.isPlaying = True

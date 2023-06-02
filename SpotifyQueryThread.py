@@ -15,4 +15,4 @@ class SpotifyQueryThread(Thread):
 
     # function executed in a new thread
     def run(self):
-        self.playListID = self.Spotify.get_playlist(self.emotion)
+        self.playListID = self.Spotify.get_playlist_id(self.emotion,self.Spotify.access_token)

@@ -42,7 +42,7 @@ class Handler:
         ret, frame = self.vid.read()
         frame = cv2.flip(frame, 1)
         originalFrame = frame.copy()
-        height, width, _ = frame.shape
+        
         # --------------------------------------------------#
         # System initialization, Handle the connection to the
         # APIs
