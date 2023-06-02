@@ -39,9 +39,7 @@ class Spotify:
         self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.client_id, client_secret=self.client_secret, redirect_uri=self.redirect_uri, scope=self.scope))
         self.access_token = None
         self.device_id = None
-        self.current_track = None
         self.track_uri_list = None
-        self.is_next = None
 
     def connect(self,spotify):
         driver = self.open_spotify(self.username, self.password)
@@ -117,16 +115,15 @@ class Spotify:
             try:
                 self.current_track_info = f"Track Name: {current_track['item']['name']} • Album Name: {current_track['item']['album']['name']} • Artist Name: {current_track['item']['artists'][0]['name']} • Next Track Name: {next_track_name} • Previous Track Name: {previous_track_name}"
                 self.current_track = current_track['item']['name']
-            except Exception:
-                self.next_track(self.sp)
-                self.get_current_track_metadata(self.sp)
+            except Exception as e:
+                print(e)
 
     def get_playlist_id(self,access_token,emotion):
         endpoint = 'https://api.spotify.com/v1/search'
         # Set the query parameters for the API request
         query_params = {
             'type': 'playlist',
-            'q': f'emotion:{emotion}',
+            'q': f'emotion:{emotion}'
         }
         # Set up the API request headers with the access token
         headers = {
