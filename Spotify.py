@@ -225,4 +225,4 @@ class Spotify:
         except Exception as e:
             print(e)
         time.sleep(0.3)
-
+        

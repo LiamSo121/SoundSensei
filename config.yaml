@@ -14,7 +14,7 @@ camera:
   thickness: 2
 
 emotion:
-  emo_frames: 20
+  emo_frames: 50
 
 diagram:
   size: !!python/tuple [250,250]

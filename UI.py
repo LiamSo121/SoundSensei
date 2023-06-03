@@ -35,7 +35,7 @@ class MainWindow(qtw.QWidget):
         self.ui = UIwindow()  # creating the ui class of the first window
         self.ui.setupUi(self.ui)
         self.ui.show()
-        self.ui.header.setText("Welcome TO SoundSensei! ")
+        self.ui.header.setText("Welcome TO SoundSensei!")
         # timer
         self.timer = QTimer(self)
         

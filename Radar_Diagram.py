@@ -18,9 +18,13 @@ class Diagram:
         total = sum(self.values_list)
         normalized_values = [value * 100 / total for value in self.values_list]
 
-        # Set up the plot with transparent background and plot area
-        fig = plt.figure(figsize=(4, 4), facecolor='white')
-        ax = fig.add_subplot(111, polar=True, facecolor='white')
+        # Set up the plot with grey background and plot area
+        fig = plt.figure(figsize=(4, 4), facecolor='#DCDCDC')
+        ax = fig.add_subplot(111, polar=True, facecolor='#DCDCDC')
+
+        # Remove unnecessary spines and gridlines
+        ax.spines['polar'].set_visible(False)
+        ax.grid(False)
 
         # Plot the data and connect first and last dots with a closed polygon
         angles = np.linspace(0, 2 * np.pi, len(self.categories_list), endpoint=False).tolist()
@@ -31,21 +35,23 @@ class Diagram:
 
         # Set the category labels
         ax.set_xticks(angles[:-1])
-        ax.set_xticklabels(self.categories_list, color='black', fontsize=12)
+        ax.set_xticklabels(self.categories_list, color='black', fontsize=16, fontweight= 'bold')
         ax.set_yticklabels([])  # Hide radial axis labels
         ax.tick_params(axis='x', pad=8)  # Increase spacing between labels and plot
 
-        # Add data values as text annotations
-        for angle, value, category, color in zip(angles, normalized_values[:-1], self.categories_list, self.colors):
-            ax.text(angle, value + 5, f'{value:.1f}', ha='center', va='center', color=color, fontsize=8)
+        # # Add data values as text annotations
+        # for angle, value, category, color in zip(angles, normalized_values[:-1], self.categories_list, self.colors):
+        #     ax.text(angle, value + 5, f'{value:.1f}', ha='center', va='center', color=color, fontsize=8)
 
         # Set the radial axis limits
         ax.set_ylim(0, 100)
         ax.set_yticks(np.linspace(0, 50, 6))
         ax.set_yticklabels([str(i) for i in range(0, 51, 10)], color='black')  # Set the tick label color to black
+        ax.set_yticklabels([])  # Hide radial axis labels
+
         # Remove unnecessary spines and gridlines
         ax.spines['polar'].set_visible(False)
-        ax.grid(True)
+        ax.grid(False)
 
         plt.tight_layout()  # Adjust plot spacing
 
