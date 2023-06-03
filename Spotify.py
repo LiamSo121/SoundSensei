@@ -126,7 +126,7 @@ class Spotify:
         query_params = {
             'type': 'playlist',
             'q': f'emotion:{emotion}',
-            'limit': 5
+            'limit': 3
 
         }
         # Set up the API request headers with the access token
