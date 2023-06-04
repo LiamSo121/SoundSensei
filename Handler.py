@@ -116,9 +116,11 @@ class Handler:
                 self.emotion_list = []
                 self.emotion = None
                 self.state = 'emo'
+                self.diagram.values_list = [1] * 7
 
         self.frame = frame
         self.diagram_image = diagram_image
+
 
 
 if __name__ == '__main__':
