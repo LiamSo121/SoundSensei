@@ -14,7 +14,7 @@ camera:
   thickness: 2
 
 emotion:
-  emo_frames: 50
+  emo_frames: 20
 
 diagram:
   size: !!python/tuple [250,250]
@@ -25,4 +25,4 @@ dalle-2:
 
 
 hands:
-  size: 15
+  size: 10

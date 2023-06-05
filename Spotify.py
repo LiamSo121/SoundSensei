@@ -148,7 +148,9 @@ class Spotify:
         playlist_id = random.choice(playlist_uris)
 
         print(playlist_id)
+        
 
+        # playlist_id = "spotify:playlist:7GhawGpb43Ctkq3PRP1fOL"
         return playlist_id
 
 
@@ -208,7 +210,7 @@ class Spotify:
         try:
             current_volume = player.current_playback()['device']['volume_percent']
             print(f"Current Volume: {current_volume}")
-            new_volume = new_volume = max(current_volume - 10, 0)
+            new_volume = new_volume = max(current_volume - 15, 0)
             player.volume(new_volume)
             print(f"New Volume: {new_volume}")
         except Exception as e:
@@ -219,7 +221,7 @@ class Spotify:
         try:
             current_volume = player.current_playback()['device']['volume_percent']
             print(f"Current Volume: {current_volume}")
-            new_volume = min(100, current_volume + 10)
+            new_volume = min(100, current_volume + 15)
             player.volume(new_volume)
             print(f"New Volume: {new_volume}")
         except Exception as e:

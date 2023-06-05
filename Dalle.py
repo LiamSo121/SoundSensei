@@ -6,7 +6,7 @@ import yaml
 
 class Dalle:
     def __init__(self):  
-        self.apiKey = "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"
+        self.apiKey = "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"
         self.data = None
 
 
